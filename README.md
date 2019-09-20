@@ -1,2 +1,2 @@
-# jmeter-test
-JMeter简单使用
+# benchmark-test
+Benchmark简单使用
