@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author yuqiang lin
- * @description 简单测试
+ * @description 简单基准测试
  * @email 1098387108@qq.com
  * @date 2019/9/20 5:08 PM
  */
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 @Measurement(iterations = 1)
 public class BasicBenchmarkTest {
-    @Param({"10",  "1000"})
+    @Param({"10", "1000", "10000"})
     private int n;
 
     private List<Integer> arrayList;
@@ -32,14 +32,14 @@ public class BasicBenchmarkTest {
     public static void main(String[] args) throws RunnerException {
         Options options = new OptionsBuilder()
                 .include(BasicBenchmarkTest.class.getSimpleName())
-                .jvmArgs("-Xms10m", "-Xmx10m")
+                .jvmArgs("-Xms20m", "-Xmx20m")
                 .forks(1)
                 .build();
 
         new Runner(options).run();
     }
 
-    @Setup(Level.Trial)
+    @Setup(Level.Invocation)
     public void init() {
         arrayList = Lists.newArrayListWithCapacity(n);
         linkedList = Lists.newLinkedList();
@@ -50,23 +50,23 @@ public class BasicBenchmarkTest {
         }
     }
 
-    @TearDown(Level.Trial)
+    @TearDown(Level.Invocation)
     public void clear() {
         arrayList.clear();
         linkedList.clear();
     }
 
     @Benchmark
-    public void arrayListTraverse() {
-        for (Integer i : arrayList) {
-            arrayList.get(i);
+    public void removeFirstElementInArrayList() {
+        while (!arrayList.isEmpty()) {
+            arrayList.remove(0);
         }
     }
 
     @Benchmark
-    public void linkedListTraverse() {
-        for (Integer i : linkedList) {
-            linkedList.get(i);
+    public void removeFirstElementInLinkedList() {
+        while (!linkedList.isEmpty()) {
+            linkedList.remove(0);
         }
     }
 }
